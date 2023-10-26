@@ -37,7 +37,7 @@ public class FeedService implements FeedServiceInterface {
             throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
         }
 
-        Long newFeedId = feedDaoInterface.create(writeUser, feedCreateRequestDto.getContent());  // feed에 생성 후에
+        Long newFeedId = feedDaoInterface.create(writeUser.getId(), feedCreateRequestDto.getContent());  // feed에 생성 후에
         userService.updateFeeds(feedCreateRequestDto.getWriterUserId(), new UserUpdateFeedsRequestDto(newFeedId, true));  // user에도 feed 속성 업데이트.
 
         return newFeedId;
@@ -66,7 +66,7 @@ public class FeedService implements FeedServiceInterface {
         }
 
         if (userDaoInterface.existByUsername(feedUpdateContentRequestDto.getUsername())) {
-            if (userDaoInterface.readByUsername(feedUpdateContentRequestDto.getUsername()).getId() == feed.getWriterUser().getId()) {  // 해당 글의 작성자가 로그인계정과 일치한다면
+            if (userDaoInterface.readByUsername(feedUpdateContentRequestDto.getUsername()).getId() == feed.getWriterUserId()) {  // 해당 글의 작성자가 로그인계정과 일치한다면
                 feed.setContent(feedUpdateContentRequestDto.getContent());
                 feed.setModifiedDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko"))));
             }
@@ -92,10 +92,10 @@ public class FeedService implements FeedServiceInterface {
             throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
         }
 
-        List<User> likeUsers = feed.getLikeUsers();
+        List<Long> likeUserIds = feed.getLikeUserIds();
         if (feedUpdateLikeRequestDto.isLike()) {
-            if (!likeUsers.contains(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()))) {  // 아직 좋아요를 누른사람이 아니라면
-                likeUsers.add(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()));
+            if (!likeUserIds.contains(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()).getId())) {  // 아직 좋아요를 누른사람이 아니라면
+                likeUserIds.add(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()).getId());
                 feed.setLikeCount(feed.getLikeCount()+1);
             }
             else {
@@ -103,17 +103,17 @@ public class FeedService implements FeedServiceInterface {
             }
         }
         else {
-            Iterator<User> iterator = likeUsers.iterator();
+            Iterator<Long> iterator = likeUserIds.iterator();
             while (iterator.hasNext()) {
-                User likeUser = iterator.next();
-                if (likeUser.equals(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()))) {
+                Long likeUserId = iterator.next();
+                if (likeUserId.equals(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()).getId())) {
                     iterator.remove();
                     if (feed.getLikeCount()-1 >= 0)
                         feed.setLikeCount(feed.getLikeCount()-1);
                 }
             }
         }
-        feed.setLikeUsers(likeUsers);
+        feed.setLikeUserIds(likeUserIds);
 
         feedDaoInterface.update(feed);
     }
@@ -137,20 +137,20 @@ public class FeedService implements FeedServiceInterface {
             throw new RuntimeException("ERROR - 해당 댓글은 존재하지 않습니다.");
         }
 
-        List<Comment> comments = feed.getComments();
+        List<Long> commentIds = feed.getCommentIds();
         if (feedUpdateCommentsRequestDto.isAdd()) {
-            comments.add(addComment);
+            commentIds.add(addComment.getId());
         }
         else {
-            Iterator<Comment> iterator = comments.iterator();
+            Iterator<Long> iterator = commentIds.iterator();
             while (iterator.hasNext()) {
-                Comment comment = iterator.next();
-                if (comment.getId().equals(feedUpdateCommentsRequestDto.getCommentId())) {
+                Long commentId = iterator.next();
+                if (commentId.equals(feedUpdateCommentsRequestDto.getCommentId())) {
                     iterator.remove();
                 }
             }
         }
-        feed.setComments(comments);
+        feed.setCommentIds(commentIds);
 
         feedDaoInterface.update(feed);
     }
@@ -158,10 +158,10 @@ public class FeedService implements FeedServiceInterface {
     @Override
     public void deleteFeed(Long feedId, FeedDeleteRequestDto feedDeleteRequestDto) {  // 글 삭제시, 글과 좋아요와 댓글들이 모두 함께 삭제된다.
 
-        List<Comment> deleteComments;
+        List<Long> deleteCommentIds;
         Feed deleteFeed;
         if (feedDaoInterface.existById(feedId)) {
-            deleteComments = feedDaoInterface.readById(feedId).getComments();
+            deleteCommentIds = feedDaoInterface.readById(feedId).getCommentIds();
             deleteFeed = feedDaoInterface.readById(feedId);
         }
         else {
@@ -171,10 +171,10 @@ public class FeedService implements FeedServiceInterface {
         if (userDaoInterface.existByUsername(feedDeleteRequestDto.getUsername())) {
             User loginUser = userDaoInterface.readByUsername(feedDeleteRequestDto.getUsername());
 
-            if (loginUser.getId() == deleteFeed.getWriterUser().getId()) {  // 해당 글의 작성자가 로그인계정과 일치한다면
-                Iterator<Comment> iterator = deleteComments.iterator();
+            if (loginUser.getId() == deleteFeed.getWriterUserId()) {  // 해당 글의 작성자가 로그인계정과 일치한다면
+                Iterator<Long> iterator = deleteCommentIds.iterator();
                 while (iterator.hasNext()) {
-                    Long deleteCommentId = iterator.next().getId();
+                    Long deleteCommentId = iterator.next();
                     commentDaoInterface.delete(deleteCommentId);  // 해당 글 내의 댓글 먼저 삭제.
                 }
                 feedDaoInterface.delete(feedId);  // 그 후에 글 삭제.

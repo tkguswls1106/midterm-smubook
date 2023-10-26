@@ -93,14 +93,33 @@ public class UserService implements UserServiceInterface {
         else {
             throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
         }
-        List<User> followUsers = user.getFollowUsers();
-        followUsers.add(addSortUser);  // users 리스트에 본인과 팔로잉 사용자들 리스트가 포함되게함.
+
+        List<Long> followUserIds = user.getFollowUserIds();
+        List<User> followUsers = new ArrayList<User>();
+        for (Long followUserId : followUserIds) {
+            User followUser = userDaoInterface.readById(followUserId);
+            if (followUser != null) {
+                followUsers.add(followUser);
+            }
+            else {
+                throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
+            }
+        }
+        followUsers.add(addSortUser);  // followUsers 리스트에 본인과 팔로잉 사용자들 리스트가 포함되게함.
 
         List<Feed> followFeeds = new ArrayList<Feed>();  // 본인과 팔로잉 사용자들의 모든 글들이 리스트에 저장되게함.
         Iterator<User> iterator = followUsers.iterator();
         while (iterator.hasNext()) {
-            List<Feed> feeds = iterator.next().getFeeds();
-            followFeeds.addAll(feeds);
+            List<Long> followFeedIds = iterator.next().getFeedIds();
+            for (Long followFeedId : followFeedIds) {
+                Feed followFeed = feedDaoInterface.readById(followFeedId);
+                if (followFeed != null) {
+                    followFeeds.add(followFeed);
+                }
+                else {
+                    throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
+                }
+            }
         }
 
         Comparator<Feed> dateComparator = (feed1, feed2) -> convertModifiedDate(feed2.getModifiedDate()).compareTo(convertModifiedDate(feed1.getModifiedDate()));
@@ -120,28 +139,28 @@ public class UserService implements UserServiceInterface {
             throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
         }
 
-        User addUser;
+        Long addUserId;
         if (userDaoInterface.existById(userUpdateFollowsRequestDto.getUserId())) {
-            addUser = userDaoInterface.readById(userUpdateFollowsRequestDto.getUserId());
+            addUserId = userUpdateFollowsRequestDto.getUserId();
         }
         else {
             throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
         }
 
-        List<User> followUsers = user.getFollowUsers();
+        List<Long> followUserIds = user.getFollowUserIds();
         if (userUpdateFollowsRequestDto.isAdd()) {
-            followUsers.add(addUser);
+            followUserIds.add(addUserId);
         }
         else {
-            Iterator<User> iterator = followUsers.iterator();
+            Iterator<Long> iterator = followUserIds.iterator();
             while (iterator.hasNext()) {
-                User followUser = iterator.next();
-                if (followUser.getId().equals(userUpdateFollowsRequestDto.getUserId())) {
+                Long followUserId = iterator.next();
+                if (followUserId.equals(userUpdateFollowsRequestDto.getUserId())) {
                     iterator.remove();
                 }
             }
         }
-        user.setFollowUsers(followUsers);
+        user.setFollowUserIds(followUserIds);
 
         userDaoInterface.update(user);
     }
@@ -157,28 +176,28 @@ public class UserService implements UserServiceInterface {
             throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
         }
 
-        Feed addFeed;
+        Long addFeedId;
         if (feedDaoInterface.existById(userUpdateFeedsRequestDto.getFeedId())) {
-            addFeed = feedDaoInterface.readById(userUpdateFeedsRequestDto.getFeedId());
+            addFeedId = userUpdateFeedsRequestDto.getFeedId();
         }
         else {
             throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
         }
 
-        List<Feed> feeds = user.getFeeds();
+        List<Long> feedIds = user.getFeedIds();
         if (userUpdateFeedsRequestDto.isAdd()) {
-            feeds.add(addFeed);
+            feedIds.add(addFeedId);
         }
         else {
-            Iterator<Feed> iterator = feeds.iterator();
+            Iterator<Long> iterator = feedIds.iterator();
             while (iterator.hasNext()) {
-                Feed feed = iterator.next();
-                if (feed.getId().equals(userUpdateFeedsRequestDto.getFeedId())) {
+                Long feedId = iterator.next();
+                if (feedId.equals(userUpdateFeedsRequestDto.getFeedId())) {
                     iterator.remove();
                 }
             }
         }
-        user.setFeeds(feeds);
+        user.setFeedIds(feedIds);
 
         userDaoInterface.update(user);
     }

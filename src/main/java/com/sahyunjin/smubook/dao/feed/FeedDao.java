@@ -1,9 +1,7 @@
 package com.sahyunjin.smubook.dao.feed;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sahyunjin.smubook.domain.comment.Comment;
 import com.sahyunjin.smubook.domain.feed.Feed;
-import com.sahyunjin.smubook.domain.user.User;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -59,10 +57,10 @@ public class FeedDao implements FeedDaoInterface {
 
 
     @Override
-    public Long create(User writeUser, String content) {
+    public Long create(Long writeUserId, String content) {
         Long newFeedId = generateNewId();
         String modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko")));
-        Feed feed = new Feed(newFeedId, content, modifiedDate, writeUser, new ArrayList<User>(), 0, new ArrayList<Comment>());
+        Feed feed = new Feed(newFeedId, content, modifiedDate, writeUserId, new ArrayList<Long>(), 0, new ArrayList<Long>());
 
         feedMap.put(feed.getId(), feed);
         this.saveFeedMap();

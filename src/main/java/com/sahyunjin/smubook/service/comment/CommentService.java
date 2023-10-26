@@ -23,7 +23,6 @@ public class CommentService implements CommentServiceInterface {
     private final CommentDaoInterface commentDaoInterface;
     private final UserService userService;
     private final FeedService feedService;
-    // 차후 CommentService에 Feed객체의 commentList 요소 추가 관련코드도 추가하기!!! create와 delete 모두 케스케이드 제거 및 추가시키기!!!
 
 
     @Override
@@ -45,7 +44,7 @@ public class CommentService implements CommentServiceInterface {
             throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
         }
 
-        Long newCommentId = commentDaoInterface.create(writeUser, ownerFeed, commentCreateRequestDto.getContent());  // comment에 생성 후에
+        Long newCommentId = commentDaoInterface.create(writeUser.getId(), ownerFeed.getId(), commentCreateRequestDto.getContent());  // comment에 생성 후에
         feedService.updateComments(feedId, new FeedUpdateCommentsRequestDto(newCommentId, true));  // feed에 comment 속성 업데이트 후에
         userService.updateFeeds(commentCreateRequestDto.getWriterUserId(), new UserUpdateFeedsRequestDto(feedId, true));  // user에도 feed 속성 업데이트.
 

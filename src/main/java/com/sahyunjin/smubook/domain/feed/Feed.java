@@ -1,7 +1,5 @@
 package com.sahyunjin.smubook.domain.feed;
 
-import com.sahyunjin.smubook.domain.comment.Comment;
-import com.sahyunjin.smubook.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +17,8 @@ public class Feed {
     private String content;
     private String modifiedDate;  // 글 생성시각 및 수정시각
 
-    private User writerUser;
-    private List<User> likeUsers;
+    private Long writerUserId;
+    private List<Long> likeUserIds;
     private Integer likeCount;
-    private List<Comment> comments;
+    private List<Long> commentIds;
 }

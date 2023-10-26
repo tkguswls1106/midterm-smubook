@@ -1,6 +1,5 @@
 package com.sahyunjin.smubook.dao.user;
 
-import com.sahyunjin.smubook.domain.feed.Feed;
 import com.sahyunjin.smubook.domain.user.User;
 
 import java.util.List;

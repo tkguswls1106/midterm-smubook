@@ -2,17 +2,11 @@ package com.sahyunjin.smubook.dao.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sahyunjin.smubook.domain.comment.Comment;
-import com.sahyunjin.smubook.domain.feed.Feed;
-import com.sahyunjin.smubook.domain.user.User;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @Repository
@@ -59,9 +53,9 @@ public class CommentDao implements CommentDaoInterface {
 
 
     @Override
-    public Long create(User writeUser, Feed ownerFeed, String content) {
+    public Long create(Long writeUserId, Long ownerFeedId, String content) {
         Long newCommentId = generateNewId();
-        Comment comment = new Comment(newCommentId, content, writeUser, ownerFeed);
+        Comment comment = new Comment(newCommentId, content, writeUserId, ownerFeedId);
 
         commentMap.put(comment.getId(), comment);
         this.saveCommentMap();

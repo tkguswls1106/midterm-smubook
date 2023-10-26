@@ -1,6 +1,5 @@
 package com.sahyunjin.smubook.domain.feed;
 
-import com.sahyunjin.smubook.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

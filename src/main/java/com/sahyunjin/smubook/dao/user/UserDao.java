@@ -1,7 +1,6 @@
 package com.sahyunjin.smubook.dao.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sahyunjin.smubook.domain.feed.Feed;
 import com.sahyunjin.smubook.domain.user.User;
 import org.springframework.stereotype.Repository;
 
@@ -58,7 +57,7 @@ public class UserDao implements UserDaoInterface {
     @Override
     public Long create(String username, String password) {
         Long newUserId = generateNewId();
-        User user = new User(newUserId, username, password, new ArrayList<User>(), new ArrayList<Feed>());
+        User user = new User(newUserId, username, password, new ArrayList<Long>(), new ArrayList<Long>());
 
         userMap.put(user.getId(), user);
         this.saveUserMap();
