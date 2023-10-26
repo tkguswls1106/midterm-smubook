@@ -30,7 +30,7 @@ public class FeedService implements FeedServiceInterface {
     public Long createFeed(FeedCreateRequestDto feedCreateRequestDto) {
 
         User writeUser;
-        if (feedDaoInterface.existById(feedCreateRequestDto.getWriterUserId())) {
+        if (userDaoInterface.existById(feedCreateRequestDto.getWriterUserId())) {
             writeUser = userDaoInterface.readById(feedCreateRequestDto.getWriterUserId());
         }
         else {
@@ -156,24 +156,29 @@ public class FeedService implements FeedServiceInterface {
     }
 
     @Override
-    public void deleteFeed(Long feedId, FeedDeleteRequestDto feedDeleteRequestDto) {
+    public void deleteFeed(Long feedId, FeedDeleteRequestDto feedDeleteRequestDto) {  // 글 삭제시, 글과 좋아요와 댓글들이 모두 함께 삭제된다.
 
         List<Comment> deleteComments;
+        Feed deleteFeed;
         if (feedDaoInterface.existById(feedId)) {
             deleteComments = feedDaoInterface.readById(feedId).getComments();
+            deleteFeed = feedDaoInterface.readById(feedId);
         }
         else {
             throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
         }
 
         if (userDaoInterface.existByUsername(feedDeleteRequestDto.getUsername())) {
-            if (userDaoInterface.readByUsername(feedDeleteRequestDto.getUsername()).getId() == feedId) {  // 해당 글의 작성자가 로그인계정과 일치한다면
+            User loginUser = userDaoInterface.readByUsername(feedDeleteRequestDto.getUsername());
+
+            if (loginUser.getId() == deleteFeed.getWriterUser().getId()) {  // 해당 글의 작성자가 로그인계정과 일치한다면
                 Iterator<Comment> iterator = deleteComments.iterator();
                 while (iterator.hasNext()) {
                     Long deleteCommentId = iterator.next().getId();
                     commentDaoInterface.delete(deleteCommentId);  // 해당 글 내의 댓글 먼저 삭제.
                 }
                 feedDaoInterface.delete(feedId);  // 그 후에 글 삭제.
+                userService.updateFeeds(loginUser.getId(), new UserUpdateFeedsRequestDto(feedId, false));  // 그 후에 User객체의 글 리스트에서 해당 글 객체를 제거.
             }
             else {
                 throw new RuntimeException("ERROR - 해당 글을 수정할 권한이 없는 사용자입니다.");

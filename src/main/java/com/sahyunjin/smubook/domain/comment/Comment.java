@@ -1,5 +1,6 @@
 package com.sahyunjin.smubook.domain.comment;
 
+import com.sahyunjin.smubook.domain.feed.Feed;
 import com.sahyunjin.smubook.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,4 +17,5 @@ public class Comment {
     private String content;
 
     private User writerUser;
+    private Feed ownerFeed;
 }

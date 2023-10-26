@@ -15,7 +15,6 @@ public class FeedController {
 
     private final UserServiceInterface userServiceInterface;
     private final FeedServiceInterface feedServiceInterface;
-    // 차후 CommentService에 Feed객체의 commentList 요소 추가 관련코드도 추가하기!!! create와 delete 모두 케스케이드 제거 및 추가시키기!!!
 
 
     @PostMapping("/feeds")

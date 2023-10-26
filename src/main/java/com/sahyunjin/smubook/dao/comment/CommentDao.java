@@ -59,9 +59,9 @@ public class CommentDao implements CommentDaoInterface {
 
 
     @Override
-    public Long create(User writeUser, String content) {
+    public Long create(User writeUser, Feed ownerFeed, String content) {
         Long newCommentId = generateNewId();
-        Comment comment = new Comment(newCommentId, content, writeUser);
+        Comment comment = new Comment(newCommentId, content, writeUser, ownerFeed);
 
         commentMap.put(comment.getId(), comment);
         this.saveCommentMap();

@@ -1,9 +1,6 @@
 package com.sahyunjin.smubook.service.feed;
 
 import com.sahyunjin.smubook.domain.feed.*;
-import com.sahyunjin.smubook.domain.user.*;
-
-import java.util.List;
 
 public interface FeedServiceInterface {
 
