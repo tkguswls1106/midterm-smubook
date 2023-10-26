@@ -3,20 +3,20 @@ package com.sahyunjin.smubook.controller;
 import com.sahyunjin.smubook.domain.user.User;
 import com.sahyunjin.smubook.domain.user.UserLoginRequestDto;
 import com.sahyunjin.smubook.domain.user.UserSignupRequestDto;
+import com.sahyunjin.smubook.domain.user.UserUpdateFollowsRequestDto;
 import com.sahyunjin.smubook.service.user.UserServiceInterface;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+//@RequestMapping("/users")
 public class UserController {
 
     private final UserServiceInterface userServiceInterface;
-
+    // 차후 FeedController에 User객체의 feedList 요소 추가 관련코드도 추가하기 !!!
 
     @PostMapping("/signup")
     public Long signUp(@RequestBody UserSignupRequestDto userSignupRequestDto) {
@@ -26,5 +26,17 @@ public class UserController {
     @PostMapping("/login")
     public User login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         return userServiceInterface.login(userLoginRequestDto);
+    }
+
+    @GetMapping("/users/{userId}")
+    public List<User> getAllUsers(@PathVariable Long userId) {
+        return userServiceInterface.readOtherUsers(userId);
+    }
+
+    @PutMapping("/users/{userId}")
+    public User updateFollowUsers(@PathVariable Long userId, @RequestBody UserUpdateFollowsRequestDto userUpdateFollowsRequestDto) {
+        userServiceInterface.updateFollowUsers(userId, userUpdateFollowsRequestDto);
+
+        return userServiceInterface.readUser(userId);
     }
 }

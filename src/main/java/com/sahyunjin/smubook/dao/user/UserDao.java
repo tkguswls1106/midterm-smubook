@@ -91,9 +91,15 @@ public class UserDao implements UserDaoInterface {
         if (userMap.containsKey(user.getId())) {
             userMap.put(user.getId(), user);
             this.saveUserMap();
-        } else {
+        }
+        else {
             throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
         }
+    }
+
+    @Override
+    public boolean existById(Long userId) {
+        return userMap.containsKey(userId);
     }
 
     @Override

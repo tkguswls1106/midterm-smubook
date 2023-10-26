@@ -38,13 +38,44 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public List<User> readAllUsers() {
-        return userDaoInterface.readAll();
+    public User readUser(Long userId) {
+        if(userDaoInterface.existById(userId)) {
+            return userDaoInterface.readById(userId);
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
+        }
+    }
+
+    @Override
+    public List<User> readOtherUsers(Long userId) {
+        User user;
+        if(userDaoInterface.existById(userId)) {
+            user = userDaoInterface.readById(userId);
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
+        }
+
+        List<User> users = userDaoInterface.readAll();
+        if (users.remove(user)) {
+            return users;
+        }
+        else {
+            throw new RuntimeException("ERROR - 리스트에서 사용자 제거 중 에러가 발생했습니다.");
+        }
     }
 
     @Override
     public void updateFollowUsers(Long userId, UserUpdateFollowsRequestDto userUpdateFollowsRequestDto) {
-        User user = userDaoInterface.readById(userId);
+        User user;
+        if(userDaoInterface.existById(userId)) {
+            user = userDaoInterface.readById(userId);
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
+        }
+
         List<User> followUsers = user.getFollowUsers();
         followUsers.add(userUpdateFollowsRequestDto.getUser());
         user.setFollowUsers(followUsers);
@@ -54,7 +85,14 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public void updateFeeds(Long userId, UserUpdateFeedsRequestDto userUpdateFeedsRequestDto) {
-        User user = userDaoInterface.readById(userId);
+        User user;
+        if(userDaoInterface.existById(userId)) {
+            user = userDaoInterface.readById(userId);
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
+        }
+
         List<Feed> feeds = user.getFeeds();
         feeds.add(userUpdateFeedsRequestDto.getFeed());
         user.setFeeds(feeds);

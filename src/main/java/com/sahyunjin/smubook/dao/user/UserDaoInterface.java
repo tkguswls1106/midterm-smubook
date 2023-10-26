@@ -15,6 +15,7 @@ public interface UserDaoInterface {
 
     void update(User user);
 
+    boolean existById(Long userId);
     boolean existByUsername(String username);
     boolean existByAccount(String username, String password);
 }

@@ -8,7 +8,10 @@ public interface UserServiceInterface {
 
     Long signUp(UserSignupRequestDto userSignupRequestDto);
     User login(UserLoginRequestDto userLoginRequestDto);
-    List<User> readAllUsers();
+
+    User readUser(Long userId);
+    List<User> readOtherUsers(Long userId);
+
     void updateFollowUsers(Long userId, UserUpdateFollowsRequestDto userUpdateFollowsRequestDto);
     void updateFeeds(Long userId, UserUpdateFeedsRequestDto userUpdateFeedsRequestDto);
 }
