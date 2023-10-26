@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 public class UserUpdateFeedsRequestDto {
 
     private Feed feed;
+    private boolean isAdd;  // 피드 추가의 경우인지 삭제의 경우인지
 
     @Builder
-    public UserUpdateFeedsRequestDto(Feed feed) {
+    public UserUpdateFeedsRequestDto(Feed feed, boolean isAdd) {
         this.feed = feed;
+        this.isAdd = isAdd;
     }
 }

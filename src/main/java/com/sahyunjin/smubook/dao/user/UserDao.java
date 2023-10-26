@@ -66,12 +66,12 @@ public class UserDao implements UserDaoInterface {
     }
 
     @Override
-    public User readById(Long userId) {
+    public User readById(Long userId) {  // 에러가 탑재되어있지않으므로, 차후 service로직에서 예외처리해야함.
         return userMap.get(userId);
     }
 
     @Override
-    public User readByUsername(String username) {
+    public User readByUsername(String username) {  // 에러가 탑재되어있으므로, 차후 service로직에서는 예외처리 안해도됨.
         for (User user : userMap.values()) {
             if (user.getUsername().equals(username)) {
                 return user;

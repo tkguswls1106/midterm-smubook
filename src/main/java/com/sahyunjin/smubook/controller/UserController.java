@@ -16,7 +16,7 @@ import java.util.List;
 public class UserController {
 
     private final UserServiceInterface userServiceInterface;
-    // 차후 FeedController에 User객체의 feedList 요소 추가 관련코드도 추가하기 !!!
+
 
     @PostMapping("/signup")
     public Long signUp(@RequestBody UserSignupRequestDto userSignupRequestDto) {
