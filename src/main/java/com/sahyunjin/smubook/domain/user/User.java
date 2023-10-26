@@ -1,4 +1,4 @@
-package com.sahyunjin.smubook.domain;
+package com.sahyunjin.smubook.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +17,6 @@ public class User {
     private String username;
     private String password;
 
-    private List<User> followUsers;
-    private List<Feed> feeds;
+//    private List<User> followUsers;
+//    private List<Feed> feeds;
 }
