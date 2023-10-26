@@ -182,5 +182,4 @@ public class UserService implements UserServiceInterface {
 
         userDaoInterface.update(user);
     }
-
 }
