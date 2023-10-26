@@ -145,7 +145,8 @@ public class FeedService implements FeedServiceInterface {
 
         List<Long> commentIds = feed.getCommentIds();
         if (feedUpdateCommentsRequestDto.isAdd()) {
-            commentIds.add(addComment.getId());
+            if (!commentIds.contains(addComment.getId()))
+                commentIds.add(addComment.getId());
         }
         else {
             Iterator<Long> iterator = commentIds.iterator();

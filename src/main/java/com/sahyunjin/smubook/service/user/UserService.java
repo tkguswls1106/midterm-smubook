@@ -155,7 +155,8 @@ public class UserService implements UserServiceInterface {
 
         List<Long> followUserIds = user.getFollowUserIds();
         if (userUpdateFollowsRequestDto.isAdd()) {
-            followUserIds.add(addUserId);
+            if (!followUserIds.contains(addUserId))
+                followUserIds.add(addUserId);
         }
         else {
             Iterator<Long> iterator = followUserIds.iterator();
@@ -193,7 +194,8 @@ public class UserService implements UserServiceInterface {
 
         List<Long> feedIds = user.getFeedIds();
         if (userUpdateFeedsRequestDto.isAdd()) {
-            feedIds.add(addFeedId);
+            if (!feedIds.contains(addFeedId))
+                feedIds.add(addFeedId);
         }
         else {
             Iterator<Long> iterator = feedIds.iterator();
