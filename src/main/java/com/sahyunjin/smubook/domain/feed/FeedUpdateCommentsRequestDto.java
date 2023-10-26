@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FeedUpdateCommentsRequestDto {
 
-    private Comment comment;
+    private Long commentId;
     private boolean isAdd;  // 댓글 추가의 경우인지 삭제의 경우인지
 
     @Builder
-    public FeedUpdateCommentsRequestDto(Comment comment, boolean isAdd) {
-        this.comment = comment;
+    public FeedUpdateCommentsRequestDto(Long commentId, boolean isAdd) {
+        this.commentId = commentId;
         this.isAdd = isAdd;
     }
 }

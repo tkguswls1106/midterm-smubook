@@ -8,8 +8,11 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Repository
@@ -56,9 +59,10 @@ public class FeedDao implements FeedDaoInterface {
 
 
     @Override
-    public Long create(String content, User writeUser) {
+    public Long create(User writeUser, String content) {
         Long newFeedId = generateNewId();
-        Feed feed = new Feed(newFeedId, content, writeUser, new ArrayList<User>(), 0, new ArrayList<Comment>());
+        String modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko")));
+        Feed feed = new Feed(newFeedId, content, modifiedDate, writeUser, new ArrayList<User>(), 0, new ArrayList<Comment>());
 
         feedMap.put(feed.getId(), feed);
         this.saveFeedMap();

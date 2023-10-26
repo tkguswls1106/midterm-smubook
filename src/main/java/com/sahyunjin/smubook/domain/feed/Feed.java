@@ -17,6 +17,7 @@ public class Feed {
 
     private Long id;
     private String content;
+    private String modifiedDate;  // 글 생성시각 및 수정시각
 
     private User writerUser;
     private List<User> likeUsers;

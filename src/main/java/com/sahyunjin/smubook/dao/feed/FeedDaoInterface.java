@@ -5,7 +5,7 @@ import com.sahyunjin.smubook.domain.user.User;
 
 public interface FeedDaoInterface {
 
-    Long create(String content, User writeUser);
+    Long create(User writeUser, String content);
 
     Feed readById(Long feedId);
 

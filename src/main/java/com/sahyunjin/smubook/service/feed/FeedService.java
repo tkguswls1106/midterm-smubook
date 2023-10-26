@@ -10,8 +10,11 @@ import com.sahyunjin.smubook.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -19,14 +22,22 @@ public class FeedService implements FeedServiceInterface {
 
     private final UserDaoInterface userDaoInterface;
     private final FeedDaoInterface feedDaoInterface;
+    private final CommentDaoInterface commentDaoInterface;
     private final UserService userService;
 
     @Override
     public Long createFeed(FeedCreateRequestDto feedCreateRequestDto) {
 
-        Long newFeedId = feedDaoInterface.create(feedCreateRequestDto.getContent(), feedCreateRequestDto.getWriterUser());
-        Feed newFeed = feedDaoInterface.readById(newFeedId);
-        userService.updateFeeds(feedCreateRequestDto.getWriterUser().getId(), new UserUpdateFeedsRequestDto(newFeed, true));
+        User writeUser;
+        if (feedDaoInterface.existById(feedCreateRequestDto.getWriterUserId())) {
+            writeUser = userDaoInterface.readById(feedCreateRequestDto.getWriterUserId());
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
+        }
+
+        Long newFeedId = feedDaoInterface.create(writeUser, feedCreateRequestDto.getContent());  // feed에 생성 후에
+        userService.updateFeeds(feedCreateRequestDto.getWriterUserId(), new UserUpdateFeedsRequestDto(newFeedId, true));  // user에도 feed 속성 업데이트.
 
         return newFeedId;
     }
@@ -56,6 +67,7 @@ public class FeedService implements FeedServiceInterface {
         if (userDaoInterface.existByUsername(feedUpdateContentRequestDto.getUsername())) {
             if (userDaoInterface.readByUsername(feedUpdateContentRequestDto.getUsername()).getId() == feed.getWriterUser().getId()) {  // 해당 글의 작성자가 로그인계정과 일치한다면
                 feed.setContent(feedUpdateContentRequestDto.getContent());
+                feed.setModifiedDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko"))));
             }
             else {
                 throw new RuntimeException("ERROR - 해당 글을 수정할 권한이 없는 사용자입니다.");
@@ -81,8 +93,13 @@ public class FeedService implements FeedServiceInterface {
 
         List<User> likeUsers = feed.getLikeUsers();
         if (feedUpdateLikeRequestDto.isLike()) {
-            likeUsers.add(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()));
-            feed.setLikeCount(feed.getLikeCount()+1);
+            if (!likeUsers.contains(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()))) {  // 아직 좋아요를 누른사람이 아니라면
+                likeUsers.add(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()));
+                feed.setLikeCount(feed.getLikeCount()+1);
+            }
+            else {
+                throw new RuntimeException("ERROR - 사용자는 이미 해당 글에 좋아요를 누른 상태입니다.");
+            }
         }
         else {
             Iterator<User> iterator = likeUsers.iterator();
@@ -111,15 +128,23 @@ public class FeedService implements FeedServiceInterface {
             throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
         }
 
+        Comment addComment;
+        if (commentDaoInterface.existById(feedUpdateCommentsRequestDto.getCommentId())) {
+            addComment = commentDaoInterface.readById(feedUpdateCommentsRequestDto.getCommentId());
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 댓글은 존재하지 않습니다.");
+        }
+
         List<Comment> comments = feed.getComments();
         if (feedUpdateCommentsRequestDto.isAdd()) {
-            comments.add(feedUpdateCommentsRequestDto.getComment());
+            comments.add(addComment);
         }
         else {
             Iterator<Comment> iterator = comments.iterator();
             while (iterator.hasNext()) {
                 Comment comment = iterator.next();
-                if (comment.equals(feedUpdateCommentsRequestDto.getComment())) {
+                if (comment.getId().equals(feedUpdateCommentsRequestDto.getCommentId())) {
                     iterator.remove();
                 }
             }
@@ -130,9 +155,32 @@ public class FeedService implements FeedServiceInterface {
     }
 
     @Override
-    public void deleteFeed(Long feedId) {
+    public void deleteFeed(Long feedId, FeedDeleteRequestDto feedDeleteRequestDto) {
 
-        feedDaoInterface.delete(feedId);
+        List<Comment> deleteComments;
+        if (feedDaoInterface.existById(feedId)) {
+            deleteComments = feedDaoInterface.readById(feedId).getComments();
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
+        }
+
+        if (userDaoInterface.existByUsername(feedDeleteRequestDto.getUsername())) {
+            if (userDaoInterface.readByUsername(feedDeleteRequestDto.getUsername()).getId() == feedId) {  // 해당 글의 작성자가 로그인계정과 일치한다면
+                Iterator<Comment> iterator = deleteComments.iterator();
+                while (iterator.hasNext()) {
+                    Long deleteCommentId = iterator.next().getId();
+                    commentDaoInterface.delete(deleteCommentId);  // 해당 글 내의 댓글 먼저 삭제.
+                }
+                feedDaoInterface.delete(feedId);  // 그 후에 글 삭제.
+            }
+            else {
+                throw new RuntimeException("ERROR - 해당 글을 수정할 권한이 없는 사용자입니다.");
+            }
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
+        }
     }
 
 }

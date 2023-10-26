@@ -15,5 +15,5 @@ public interface FeedServiceInterface {
     void updateLike(Long feedId, FeedUpdateLikeRequestDto feedUpdateLikeRequestDto);
     void updateComments(Long feedId, FeedUpdateCommentsRequestDto feedUpdateCommentsRequestDto);
 
-    void deleteFeed(Long feedId);
+    void deleteFeed(Long feedId, FeedDeleteRequestDto feedDeleteRequestDto);
 }

@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FeedCreateRequestDto {
 
+    private Long writerUserId;
     private String content;
-    private User writerUser;
 
     @Builder
-    public FeedCreateRequestDto(String content, User writerUser) {
+    public FeedCreateRequestDto(Long writerUserId, String content) {
+        this.writerUserId = writerUserId;
         this.content = content;
-        this.writerUser = writerUser;
     }
 }

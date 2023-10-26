@@ -34,9 +34,9 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}")
-    public User updateFollowUsers(@PathVariable Long userId, @RequestBody UserUpdateFollowsRequestDto userUpdateFollowsRequestDto) {
+    public void updateFollowUsers(@PathVariable Long userId, @RequestBody UserUpdateFollowsRequestDto userUpdateFollowsRequestDto) {
         userServiceInterface.updateFollowUsers(userId, userUpdateFollowsRequestDto);
-
-        return userServiceInterface.readUser(userId);
+//        return userServiceInterface.readUser(userId);
     }
+
 }
