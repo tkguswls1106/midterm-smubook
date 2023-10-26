@@ -9,5 +9,7 @@ public interface CommentDaoInterface {
 
     Comment readById(Long commentId);
 
+    void delete(Long commentId);
+
     boolean existById(Long commentId);
 }

@@ -1,5 +1,6 @@
 package com.sahyunjin.smubook.service.feed;
 
+import com.sahyunjin.smubook.dao.comment.CommentDaoInterface;
 import com.sahyunjin.smubook.dao.feed.FeedDaoInterface;
 import com.sahyunjin.smubook.dao.user.UserDaoInterface;
 import com.sahyunjin.smubook.domain.comment.Comment;

@@ -74,6 +74,17 @@ public class CommentDao implements CommentDaoInterface {
     }
 
     @Override
+    public void delete(Long commentId) {  // 에러가 탑재되어있으므로, 차후 service로직에서는 예외처리 안해도됨.
+        if (commentMap.containsKey(commentId)) {
+            commentMap.remove(commentId);
+            this.saveCommentMap();
+        }
+        else {
+            throw new RuntimeException("ERROR - 해당 댓글은 존재하지 않습니다.");
+        }
+    }
+
+    @Override
     public boolean existById(Long commentId) {
         return commentMap.containsKey(commentId);
     }
