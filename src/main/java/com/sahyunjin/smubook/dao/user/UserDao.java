@@ -39,9 +39,10 @@ public class UserDao implements UserDaoInterface {
     private void loadUserMap() {
         try {
             File file = new File(dataFilePath);
-            if (file.exists()) {
-                userMap = objectMapper.readValue(file, objectMapper.getTypeFactory().constructMapType(LinkedHashMap.class, Long.class, User.class));
+            if (!file.exists()) {
+                file.createNewFile();  // 파일이 없을 경우 생성
             }
+            userMap = objectMapper.readValue(file, objectMapper.getTypeFactory().constructMapType(LinkedHashMap.class, Long.class, User.class));
         } catch (IOException e) {
             throw new RuntimeException("ERROR - 데이터 로드 중 에러가 발생했습니다.");
         }

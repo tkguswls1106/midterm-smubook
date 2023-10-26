@@ -6,11 +6,11 @@ import com.sahyunjin.smubook.domain.feed.Feed;
 import com.sahyunjin.smubook.domain.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +27,7 @@ public class UserService implements UserServiceInterface {
     }
 
 
+    @Transactional
     @Override
     public Long signUp(UserSignupRequestDto userSignupRequestDto) {
 
@@ -38,6 +39,7 @@ public class UserService implements UserServiceInterface {
         }
     }
 
+    @Transactional
     @Override
     public User login(UserLoginRequestDto userLoginRequestDto) {
 
@@ -49,6 +51,7 @@ public class UserService implements UserServiceInterface {
         }
     }
 
+    @Transactional
     @Override
     public User readUser(Long userId) {
 
@@ -60,6 +63,7 @@ public class UserService implements UserServiceInterface {
         }
     }
 
+    @Transactional
     @Override
     public List<User> readOtherUsers(Long userId) {
 
@@ -81,6 +85,7 @@ public class UserService implements UserServiceInterface {
         }
     }
 
+    @Transactional
     @Override
     public List<Feed> readMeAndFollowFeeds(Long userId) {
 
@@ -128,6 +133,7 @@ public class UserService implements UserServiceInterface {
         return followFeeds;
     }
 
+    @Transactional
     @Override
     public void updateFollowUsers(Long userId, UserUpdateFollowsRequestDto userUpdateFollowsRequestDto) {
 
@@ -165,6 +171,7 @@ public class UserService implements UserServiceInterface {
         userDaoInterface.update(user);
     }
 
+    @Transactional
     @Override
     public void updateFeeds(Long userId, UserUpdateFeedsRequestDto userUpdateFeedsRequestDto) {
 

@@ -10,6 +10,7 @@ import com.sahyunjin.smubook.domain.user.UserUpdateFeedsRequestDto;
 import com.sahyunjin.smubook.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +27,7 @@ public class FeedService implements FeedServiceInterface {
     private final CommentDaoInterface commentDaoInterface;
     private final UserService userService;
 
+    @Transactional
     @Override
     public Long createFeed(FeedCreateRequestDto feedCreateRequestDto) {
 
@@ -43,6 +45,7 @@ public class FeedService implements FeedServiceInterface {
         return newFeedId;
     }
 
+    @Transactional
     @Override
     public Feed readFeed(Long feedId) {
 
@@ -54,6 +57,7 @@ public class FeedService implements FeedServiceInterface {
         }
     }
 
+    @Transactional
     @Override
     public void updateContent(Long feedId, FeedUpdateContentRequestDto feedUpdateContentRequestDto) {
 
@@ -81,6 +85,7 @@ public class FeedService implements FeedServiceInterface {
         feedDaoInterface.update(feed);
     }
 
+    @Transactional
     @Override
     public void updateLike(Long feedId, FeedUpdateLikeRequestDto feedUpdateLikeRequestDto) {
 
@@ -118,6 +123,7 @@ public class FeedService implements FeedServiceInterface {
         feedDaoInterface.update(feed);
     }
 
+    @Transactional
     @Override
     public void updateComments(Long feedId, FeedUpdateCommentsRequestDto feedUpdateCommentsRequestDto) {
 
@@ -155,6 +161,7 @@ public class FeedService implements FeedServiceInterface {
         feedDaoInterface.update(feed);
     }
 
+    @Transactional
     @Override
     public void deleteFeed(Long feedId, FeedDeleteRequestDto feedDeleteRequestDto) {  // 글 삭제시, 글과 좋아요와 댓글들이 모두 함께 삭제된다.
 

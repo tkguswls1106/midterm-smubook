@@ -13,6 +13,7 @@ import com.sahyunjin.smubook.service.feed.FeedService;
 import com.sahyunjin.smubook.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class CommentService implements CommentServiceInterface {
     private final FeedService feedService;
 
 
+    @Transactional
     @Override
     public Long createComment(Long feedId, CommentCreateRequestDto commentCreateRequestDto) {
 
@@ -51,6 +53,7 @@ public class CommentService implements CommentServiceInterface {
         return newCommentId;
     }
 
+    @Transactional
     @Override
     public Comment readComment(Long commentId) {
 

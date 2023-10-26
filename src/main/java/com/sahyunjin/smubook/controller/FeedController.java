@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/feeds")
 public class FeedController {
 
     private final UserServiceInterface userServiceInterface;
