@@ -18,6 +18,6 @@ public class User {
     private String username;
     private String password;
 
-    private List<User> followUsers;
-    private List<Feed> feeds;
+//    private List<User> followUsers;
+//    private List<Feed> feeds;
 }
