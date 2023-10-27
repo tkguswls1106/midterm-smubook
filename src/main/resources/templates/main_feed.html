@@ -9,6 +9,7 @@
 
   <br>
 
+  <h3>* 새 글 작성 *</h3>
   <form method="post" th:action="@{/feeds}">
     <input type="hidden" name="writerUserId" th:value="${userId}">
     <textarea name="content" placeholder="글 내용 입력"></textarea>
@@ -24,11 +25,9 @@
   <ul>
     <li th:each="feedResponseDto : ${feedResponseDtos}">
       <hr>
-      <h3>글</h3>
+      <h2>글</h2>
 
       <strong>-&nbsp&nbsp수정시각:</strong>&nbsp&nbsp<span th:text="${feedResponseDto.feed.modifiedDate}"></span>
-      <br>
-      <strong>-&nbsp&nbsp작성자 username:</strong>&nbsp&nbsp<span th:text="${feedResponseDto.username}"></span>
       <br>
       <strong>-&nbsp&nbsp내용:</strong>&nbsp&nbsp<span th:text="${feedResponseDto.feed.content}"></span>
       <br>
@@ -51,13 +50,11 @@
       <br>
 
       ----------------------------
-      <h3>댓글</h3>
+      <h2>댓글</h2>
 
       <ul>
         <li th:each="comment : ${feedResponseDto.comments}">
 
-          <strong>-&nbsp&nbsp익명 작성자:</strong>&nbsp&nbsp익명<span th:text="${comment.writerUserId}"></span>
-          <br>
           <strong>-&nbsp&nbsp내용:</strong>&nbsp&nbsp<span th:text="${comment.content}"></span>
           <br>
           ------------
@@ -65,7 +62,14 @@
         </li>
       </ul>
 
-      <hr>
+      <h3>* 새 댓글 작성 *</h3>
+      <form method="post" th:action="@{/feeds/{feedId}/comments(feedId=${feedResponseDto.feed.id})}">
+        <input type="hidden" name="writerUserId" th:value="${userId}">
+        <textarea name="content" placeholder="글 내용 입력"></textarea>
+        <button type="submit">new comment 작성완료</button>
+      </form>
+
+      <br><hr>
     </li>
   </ul>
 

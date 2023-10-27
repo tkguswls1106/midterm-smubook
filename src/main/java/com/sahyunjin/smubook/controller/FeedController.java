@@ -3,7 +3,6 @@ package com.sahyunjin.smubook.controller;
 import com.sahyunjin.smubook.domain.comment.Comment;
 import com.sahyunjin.smubook.domain.feed.*;
 import com.sahyunjin.smubook.domain.user.User;
-import com.sahyunjin.smubook.domain.user.UserResponseDto;
 import com.sahyunjin.smubook.service.comment.CommentServiceInterface;
 import com.sahyunjin.smubook.service.feed.FeedServiceInterface;
 import com.sahyunjin.smubook.service.user.UserServiceInterface;
