@@ -127,10 +127,19 @@ public class UserService implements UserServiceInterface {
             }
         }
 
-        Comparator<Feed> dateComparator = (feed1, feed2) -> convertModifiedDate(feed2.getModifiedDate()).compareTo(convertModifiedDate(feed1.getModifiedDate()));
-        Collections.sort(followFeeds, dateComparator);  // 생성 및 수정시각에 따라서 내림차순으로 글을 정렬.
+        Set<Long> uniqueIds = new HashSet<>();  // feedId가 중복되는 feed객체를 제거하기위해서.
+        List<Feed> uniqueFollowFeeds = new ArrayList<>();
+        for (Feed feed : followFeeds) {
+            if (!uniqueIds.contains(feed.getId())) {
+                uniqueIds.add(feed.getId());
+                uniqueFollowFeeds.add(feed);
+            }
+        }
 
-        return followFeeds;
+        Comparator<Feed> dateComparator = (feed1, feed2) -> convertModifiedDate(feed2.getModifiedDate()).compareTo(convertModifiedDate(feed1.getModifiedDate()));
+        Collections.sort(uniqueFollowFeeds, dateComparator);  // 생성 및 수정시각에 따라서 내림차순으로 글을 정렬.
+
+        return uniqueFollowFeeds;
     }
 
     @Transactional

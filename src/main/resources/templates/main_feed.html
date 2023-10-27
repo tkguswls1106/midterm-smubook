@@ -6,6 +6,52 @@
 
 <body>
   <h1>Main feed 페이지</h1>
+
+  <br>
   <button th:onclick="'location.href=\'' + @{/users/{userId}(userId=${userId})} + '\''">Friends 페이지로 이동하기</button>
+  <br>
+
+  <ul>
+    <li th:each="feedResponseDto : ${feedResponseDtos}">
+      <hr>
+      <h3>글</h3>
+
+      <strong>-&nbsp&nbsp수정시각:</strong>&nbsp&nbsp<span th:text="${feedResponseDto.feed.modifiedDate}"></span>
+      <br>
+      <strong>-&nbsp&nbsp작성자 username:</strong>&nbsp&nbsp<span th:text="${feedResponseDto.username}"></span>
+      <br>
+      <strong>-&nbsp&nbsp내용:</strong>&nbsp&nbsp<span th:text="${feedResponseDto.feed.content}"></span>
+      <br>
+      <strong>-&nbsp&nbspLike:</strong>&nbsp&nbsp<span th:text="${feedResponseDto.feed.likeCount}"></span>&nbsp개
+
+      <form method="post" th:action="@{/like-feed/{feedId}(feedId=${feedResponseDto.feed.id})}">
+        <input type="hidden" name="_method" value="put">
+        <input type="hidden" name="username" th:value="${feedResponseDto.username}">
+        <input type="hidden" name="boolLike" th:value="${!feedResponseDto.boolLike}">
+        <button th:if="${feedResponseDto.boolLike == false}" type="submit">Like 누르기</button>
+        <button th:if="${feedResponseDto.boolLike == true}" type="submit">Like 취소하기</button>
+      </form>
+
+      <br>
+
+      ----------------------------
+      <h3>댓글</h3>
+
+      <ul>
+        <li th:each="comment : ${feedResponseDto.comments}">
+
+          <strong>-&nbsp&nbsp익명 작성자:</strong>&nbsp&nbsp익명<span th:text="${comment.writerUserId}"></span>
+          <br>
+          <strong>-&nbsp&nbsp내용:</strong>&nbsp&nbsp<span th:text="${comment.content}"></span>
+          <br>
+          ------------
+
+        </li>
+      </ul>
+
+      <hr>
+    </li>
+  </ul>
+
 </body>
 </html>

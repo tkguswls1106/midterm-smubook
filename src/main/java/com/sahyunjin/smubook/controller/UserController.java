@@ -59,7 +59,7 @@ public class UserController {
 
             session.setAttribute("user", loginUser);
 
-            return "redirect:/main_feed";  // main_feed 페이지로 리다이렉트
+            return "redirect:/users/" + loginUser.getId() + "/feeds";  // main_feed 페이지로 리다이렉트
         }
         catch (RuntimeException e) {
             System.out.println(e.getMessage());
@@ -70,7 +70,13 @@ public class UserController {
     @GetMapping("/users/{userId}")  // 본인을 제외한 팔로잉사용자들을 모두 조회 (username 기준으로 오름차순 정렬)
     public String getAllUsers(@PathVariable Long userId, Model model, HttpSession session) {
 
-        loginCheckSession(session);  // 로그인 체크
+        User loginUser;
+        try {  // 로그인 체크
+            loginUser = loginCheckSession(session);
+        }
+        catch (RuntimeException e) {  // 로그인이 안되어있을시, 로그인창으로 강제 리다이렉트
+            return "redirect:/login";
+        }
 
         List<Long> followUserIds = userServiceInterface.readUser(userId).getFollowUserIds();
         List<User> followUsers = new ArrayList<User>();
@@ -101,7 +107,14 @@ public class UserController {
 
     @PutMapping("/users/{myId}")  // 사용자 follow 기능 (이미 follow누른사용자의 경우에는 unlike 가능.)
     public String updateFollowUsers(@PathVariable Long myId, @ModelAttribute UserUpdateFollowsRequestDto userUpdateFollowsRequestDto, HttpSession session) {
-        loginCheckSession(session);  // 로그인 체크
+
+        User loginUser;
+        try {  // 로그인 체크
+            loginUser = loginCheckSession(session);
+        }
+        catch (RuntimeException e) {  // 로그인이 안되어있을시, 로그인창으로 강제 리다이렉트
+            return "redirect:/login";
+        }
 
         userServiceInterface.updateFollowUsers(myId, userUpdateFollowsRequestDto);
         return "redirect:/users/" + myId;

@@ -6,9 +6,9 @@
 
 <body>
   <h1>Friends 페이지</h1>
-  <button th:onclick="'location.href=\'' + @{/main_feed} + '\''">Main Feed 페이지로 이동하기</button>
-  <br>
 
+  <br>
+  <button th:onclick="'location.href=\'' + @{/users/{userId}/feeds(userId=${userId})} + '\''">Main Feed 페이지로 이동하기</button>
   <br>
 
   <ul>
@@ -28,5 +28,6 @@
 
     </li>
   </ul>
+
 </body>
 </html>
