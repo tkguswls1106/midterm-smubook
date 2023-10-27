@@ -17,25 +17,24 @@ public class UserController {
     private final UserServiceInterface userServiceInterface;
 
 
-    @PostMapping("/signup")
+    @PostMapping("/signup")  // 회원가입
     public Long signUp(@RequestBody UserSignupRequestDto userSignupRequestDto) {
         return userServiceInterface.signUp(userSignupRequestDto);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login")  // 로그인
     public User login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         return userServiceInterface.login(userLoginRequestDto);
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users/{userId}")  // 본인을 제외한 팔로잉사용자들을 모두 조회 (username 기준으로 오름차순 정렬)
     public List<User> getAllUsers(@PathVariable Long userId) {
         return userServiceInterface.readOtherUsers(userId);
     }
 
-    @PutMapping("/users/{userId}")
+    @PutMapping("/users/{userId}")  // 사용자 follow 기능 (이미 follow누른사용자의 경우에는 unlike 가능.)
     public void updateFollowUsers(@PathVariable Long userId, @RequestBody UserUpdateFollowsRequestDto userUpdateFollowsRequestDto) {
         userServiceInterface.updateFollowUsers(userId, userUpdateFollowsRequestDto);
 //        return userServiceInterface.readUser(userId);
     }
-
 }

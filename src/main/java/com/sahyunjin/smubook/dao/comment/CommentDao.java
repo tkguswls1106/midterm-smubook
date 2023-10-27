@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -71,6 +73,19 @@ public class CommentDao implements CommentDaoInterface {
     @Override
     public Comment readById(Long commentId) {  // 에러가 탑재되어있지않으므로, 차후 service로직에서 예외처리해야함.
         return commentMap.get(commentId);
+    }
+
+    @Override
+    public List<Comment> readAllByFeedId(Long feedId) {
+        List<Comment> comments = new ArrayList<Comment>();
+
+        for (Comment comment : commentMap.values()) {
+            if (comment.getOwnerFeedId().equals(feedId)) {
+                comments.add(comment);
+            }
+        }
+
+        return comments;
     }
 
     @Override

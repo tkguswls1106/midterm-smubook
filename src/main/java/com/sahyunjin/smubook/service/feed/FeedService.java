@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +56,19 @@ public class FeedService implements FeedServiceInterface {
         else {
             throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
         }
+    }
+
+    @Override
+    public List<Comment> readAllComments(Long feedId) {
+
+        if (!feedDaoInterface.existById(feedId)) {
+            throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
+        }
+
+        List<Comment> comments = commentDaoInterface.readAllByFeedId(feedId);
+        Collections.sort(comments, (comment1, comment2) -> comment2.getId().compareTo(comment1.getId()));  // id를 기준으로 댓글들을 오름차순 정렬함. 즉, 댓글 생성 최신순 정렬임.
+
+        return comments;
     }
 
     @Transactional
