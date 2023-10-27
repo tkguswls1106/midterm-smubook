@@ -6,6 +6,6 @@
 
 <body>
   <h1>Main feed 페이지</h1>
-
+  <button th:onclick="'location.href=\'' + @{/users/{userId}(userId=${userId})} + '\''">Friends 페이지로 이동하기</button>
 </body>
 </html>

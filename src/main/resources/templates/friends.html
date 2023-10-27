@@ -6,6 +6,11 @@
 
 <body>
   <h1>Friends 페이지</h1>
+  <button th:onclick="'location.href=\'' + @{/main_feed} + '\''">Main Feed 페이지로 이동하기</button>
+  <br>
+
+  <br>
+
   <ul>
     <li th:each="userResponseDto : ${userResponseDtos}">
 

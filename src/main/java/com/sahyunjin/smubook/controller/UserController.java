@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,9 +53,12 @@ public class UserController {
         return "login_error";
     }
     @PostMapping("/login")  // 로그인 처리
-    public String login(@ModelAttribute UserLoginRequestDto userLoginRequestDto) {
+    public String login(@ModelAttribute UserLoginRequestDto userLoginRequestDto, HttpSession session) {
         try {
-            userServiceInterface.login(userLoginRequestDto);
+            User loginUser = userServiceInterface.login(userLoginRequestDto);
+
+            session.setAttribute("user", loginUser);
+
             return "redirect:/main_feed";  // main_feed 페이지로 리다이렉트
         }
         catch (RuntimeException e) {
@@ -64,7 +68,9 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")  // 본인을 제외한 팔로잉사용자들을 모두 조회 (username 기준으로 오름차순 정렬)
-    public String getAllUsers(@PathVariable Long userId, Model model) {
+    public String getAllUsers(@PathVariable Long userId, Model model, HttpSession session) {
+
+        loginCheckSession(session);  // 로그인 체크
 
         List<Long> followUserIds = userServiceInterface.readUser(userId).getFollowUserIds();
         List<User> followUsers = new ArrayList<User>();
@@ -94,14 +100,25 @@ public class UserController {
     }
 
     @PutMapping("/users/{myId}")  // 사용자 follow 기능 (이미 follow누른사용자의 경우에는 unlike 가능.)
-    public String updateFollowUsers(@PathVariable Long myId, @ModelAttribute UserUpdateFollowsRequestDto userUpdateFollowsRequestDto) {
-        userServiceInterface.updateFollowUsers(myId, userUpdateFollowsRequestDto);
+    public String updateFollowUsers(@PathVariable Long myId, @ModelAttribute UserUpdateFollowsRequestDto userUpdateFollowsRequestDto, HttpSession session) {
+        loginCheckSession(session);  // 로그인 체크
 
+        userServiceInterface.updateFollowUsers(myId, userUpdateFollowsRequestDto);
         return "redirect:/users/" + myId;
     }
 
 
-    // 기타 사용 메소드들
+    // ----- 기타 사용 메소드들 ----- //
+
+    public User loginCheckSession(HttpSession session) {  // 로그인 체크용 메소드
+        User user = (User) session.getAttribute("user");
+        if (user != null) {  // 로그인되어있는 경우
+            return user;
+        } else {
+            throw new RuntimeException("ERROR - 로그인이 되어있지않습니다.");
+        }
+    }
+
     public static <T> List<Boolean> containsInA(List<T> A, List<T> B) {
         List<Boolean> boolResults = new ArrayList<>();
 
