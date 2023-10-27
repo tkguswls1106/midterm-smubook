@@ -26,8 +26,19 @@ public class FeedController {
 
 
     @PostMapping("/feeds")  // feed 1개 생성
-    public Long createFeed(@RequestBody FeedCreateRequestDto feedCreateRequestDto) {
-        return feedServiceInterface.createFeed(feedCreateRequestDto);
+    public String createFeed(@ModelAttribute FeedCreateRequestDto feedCreateRequestDto, HttpSession session) {
+
+        User loginUser;
+        try {  // 로그인 체크
+            loginUser = loginCheckSession(session);
+        }
+        catch (RuntimeException e) {  // 로그인이 안되어있을시, 로그인창으로 강제 리다이렉트
+            return "redirect:/login";
+        }
+
+        feedServiceInterface.createFeed(feedCreateRequestDto);
+
+        return "redirect:/users/" + loginUser.getId() + "/feeds";
     }
 
     @GetMapping("/users/{userId}/feeds")  // 본인과 팔로잉사용자들의 feed들 모두 조회 (최신 수정순 정렬)

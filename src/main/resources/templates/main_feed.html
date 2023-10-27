@@ -8,7 +8,17 @@
   <h1>Main feed 페이지</h1>
 
   <br>
+
+  <form method="post" th:action="@{/feeds}">
+    <input type="hidden" name="writerUserId" th:value="${userId}">
+    <textarea name="content" placeholder="글 내용 입력"></textarea>
+    <button type="submit">new post 작성완료</button>
+  </form>
+
+  <br>
+
   <button th:onclick="'location.href=\'' + @{/users/{userId}(userId=${userId})} + '\''">Friends 페이지로 이동하기</button>
+
   <br>
 
   <ul>
