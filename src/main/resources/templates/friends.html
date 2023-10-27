@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Friends 페이지</title>
+</head>
+
+<body>
+  <h1>Friends 페이지</h1>
+  <ul>
+    <li th:each="userResponseDto : ${userResponseDtos}">
+
+      username:&nbsp<span th:text="${userResponseDto.username}"></span>
+      <br>
+      follow 상태:&nbsp<span th:if="${userResponseDto.boolFollow == true}">Yes</span><span th:if="${userResponseDto.boolFollow == false}">No</span>
+
+      <form method="post" th:action="@{/users/{myId}(myId=${userId})}">
+        <input type="hidden" name="_method" value="put">
+        <input type="hidden" name="userId" th:value="${userResponseDto.id}">
+        <input type="hidden" name="boolAdd" th:value="${!userResponseDto.boolFollow}">
+        <button th:if="${userResponseDto.boolFollow == false}" type="submit">follow 하기</button>
+        <button th:if="${userResponseDto.boolFollow == true}" type="submit">unfollow 하기</button>
+      </form>
+
+    </li>
+  </ul>
+</body>
+</html>

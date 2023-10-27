@@ -8,14 +8,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserLoginRequestDto {
+public class UserResponseDto {
 
+    private Long id;
     private String username;
-    private String password;
+
+    private boolean boolFollow;
 
     @Builder
-    public UserLoginRequestDto(String username, String password) {
+    public UserResponseDto(Long id, String username, boolean boolFollow) {
+        this.id = id;
         this.username = username;
-        this.password = password;
+        this.boolFollow = boolFollow;
     }
 }

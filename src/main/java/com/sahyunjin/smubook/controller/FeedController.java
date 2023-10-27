@@ -4,11 +4,12 @@ import com.sahyunjin.smubook.domain.feed.*;
 import com.sahyunjin.smubook.service.feed.FeedServiceInterface;
 import com.sahyunjin.smubook.service.user.UserServiceInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class FeedController {
 
@@ -29,13 +30,11 @@ public class FeedController {
     @PutMapping("/feeds/{feedId}")  // feed의 내용 수정 (로그인사용자가 feed 작성자인 경우에만 수정 가능)
     public void updateContent(@PathVariable Long feedId, @RequestBody FeedUpdateContentRequestDto feedUpdateContentRequestDto) {
         feedServiceInterface.updateContent(feedId, feedUpdateContentRequestDto);
-//        return feedServiceInterface.readFeed(feedId);
     }
 
     @PutMapping("/like-feed/{feedId}")  // feed의 Like 기능 (개인당 최대 1번까지 가능. 이미 Like누른사용자의 경우에는 unlike만 가능.)
     public void updateLike(@PathVariable Long feedId, @RequestBody FeedUpdateLikeRequestDto feedUpdateLikeRequestDto) {
         feedServiceInterface.updateLike(feedId, feedUpdateLikeRequestDto);
-//        return feedServiceInterface.readFeed(feedId);
     }
 
     @DeleteMapping("/feeds/{feedId}")  // feed 삭제 (삭제시 'feed,Like,댓글' 전부 일괄삭제. 로그인사용자가 feed 작성자인 경우에만 삭제 가능.)
