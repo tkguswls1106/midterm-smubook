@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 public class UserUpdateFollowsRequestDto {
 
     private Long userId;
-    private boolean isAdd;  // 팔로우 추가의 경우인지 삭제의 경우인지
+    private boolean boolAdd;  // 팔로우 추가의 경우인지 삭제의 경우인지
 
     @Builder
-    public UserUpdateFollowsRequestDto(Long userId, boolean isAdd) {
+    public UserUpdateFollowsRequestDto(Long userId, boolean boolAdd) {
         this.userId = userId;
-        this.isAdd = isAdd;
+        this.boolAdd = boolAdd;
     }
 }

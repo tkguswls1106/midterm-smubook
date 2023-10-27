@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 public class FeedUpdateLikeRequestDto {
 
     private String username;
-    private boolean isLike;  // 좋아요 추가의 경우인지 삭제의 경우인지
+    private boolean boolLike;  // 좋아요 추가의 경우인지 삭제의 경우인지
 
     @Builder
-    public FeedUpdateLikeRequestDto(String username, boolean isLike) {
+    public FeedUpdateLikeRequestDto(String username, boolean boolLike) {
         this.username = username;
-        this.isLike = isLike;
+        this.boolLike = boolLike;
     }
 }

@@ -154,7 +154,7 @@ public class UserService implements UserServiceInterface {
         }
 
         List<Long> followUserIds = user.getFollowUserIds();
-        if (userUpdateFollowsRequestDto.isAdd()) {
+        if (userUpdateFollowsRequestDto.isBoolAdd()) {
             if (!followUserIds.contains(addUserId))
                 followUserIds.add(addUserId);
         }
@@ -184,16 +184,18 @@ public class UserService implements UserServiceInterface {
             throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");
         }
 
-        Long addFeedId;
-        if (feedDaoInterface.existById(userUpdateFeedsRequestDto.getFeedId())) {
-            addFeedId = userUpdateFeedsRequestDto.getFeedId();
-        }
-        else {
-            throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
-        }
+        Long addFeedId = userUpdateFeedsRequestDto.getFeedId();
+        // deleteFeed 메소드 내에서 feed삭제후 updateFeed 메소드 호출을 하게되면 feed가 존재하지않는걸로 간주되어 에러처리되기때문에, 밑부분은 주석처리하였음.
+//        Long addFeedId;
+//        if (feedDaoInterface.existById(userUpdateFeedsRequestDto.getFeedId())) {
+//            addFeedId = userUpdateFeedsRequestDto.getFeedId();
+//        }
+//        else {
+//            throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
+//        }
 
         List<Long> feedIds = user.getFeedIds();
-        if (userUpdateFeedsRequestDto.isAdd()) {
+        if (userUpdateFeedsRequestDto.isBoolAdd()) {
             if (!feedIds.contains(addFeedId))
                 feedIds.add(addFeedId);
         }

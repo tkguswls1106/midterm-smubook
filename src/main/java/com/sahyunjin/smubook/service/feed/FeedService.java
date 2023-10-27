@@ -98,7 +98,7 @@ public class FeedService implements FeedServiceInterface {
         }
 
         List<Long> likeUserIds = feed.getLikeUserIds();
-        if (feedUpdateLikeRequestDto.isLike()) {
+        if (feedUpdateLikeRequestDto.isBoolLike()) {
             if (!likeUserIds.contains(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()).getId())) {  // 아직 좋아요를 누른사람이 아니라면
                 likeUserIds.add(userDaoInterface.readByUsername(feedUpdateLikeRequestDto.getUsername()).getId());
                 feed.setLikeCount(feed.getLikeCount()+1);
@@ -144,7 +144,7 @@ public class FeedService implements FeedServiceInterface {
         }
 
         List<Long> commentIds = feed.getCommentIds();
-        if (feedUpdateCommentsRequestDto.isAdd()) {
+        if (feedUpdateCommentsRequestDto.isBoolAdd()) {
             if (!commentIds.contains(addComment.getId()))
                 commentIds.add(addComment.getId());
         }
@@ -189,7 +189,7 @@ public class FeedService implements FeedServiceInterface {
                 userService.updateFeeds(loginUser.getId(), new UserUpdateFeedsRequestDto(feedId, false));  // 그 후에 User객체의 글 리스트에서 해당 글 객체를 제거.
             }
             else {
-                throw new RuntimeException("ERROR - 해당 글을 수정할 권한이 없는 사용자입니다.");
+                throw new RuntimeException("ERROR - 해당 글을 삭제할 권한이 없는 사용자입니다.");
             }
         }
         else {
