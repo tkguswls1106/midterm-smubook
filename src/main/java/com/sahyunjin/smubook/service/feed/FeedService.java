@@ -193,18 +193,13 @@ public class FeedService implements FeedServiceInterface {
         if (userDaoInterface.existByUsername(feedDeleteRequestDto.getUsername())) {
             User loginUser = userDaoInterface.readByUsername(feedDeleteRequestDto.getUsername());
 
-            if (loginUser.getId() == deleteFeed.getWriterUserId()) {  // 해당 글의 작성자가 로그인계정과 일치한다면
-                Iterator<Long> iterator = deleteCommentIds.iterator();
-                while (iterator.hasNext()) {
-                    Long deleteCommentId = iterator.next();
-                    commentDaoInterface.delete(deleteCommentId);  // 해당 글 내의 댓글 먼저 삭제.
-                }
-                feedDaoInterface.delete(feedId);  // 그 후에 글 삭제.
-                userService.updateFeeds(loginUser.getId(), new UserUpdateFeedsRequestDto(feedId, false));  // 그 후에 User객체의 글 리스트에서 해당 글 객체를 제거.
+            Iterator<Long> iterator = deleteCommentIds.iterator();
+            while (iterator.hasNext()) {
+                Long deleteCommentId = iterator.next();
+                commentDaoInterface.delete(deleteCommentId);  // 해당 글 내의 댓글 먼저 삭제.
             }
-            else {
-                throw new RuntimeException("ERROR - 해당 글을 삭제할 권한이 없는 사용자입니다.");
-            }
+            feedDaoInterface.delete(feedId);  // 그 후에 글 삭제.
+            userService.updateFeeds(loginUser.getId(), new UserUpdateFeedsRequestDto(feedId, false));  // 그 후에 User객체의 글 리스트에서 해당 글 객체를 제거.
         }
         else {
             throw new RuntimeException("ERROR - 해당 사용자는 존재하지 않습니다.");

@@ -121,9 +121,6 @@ public class UserService implements UserServiceInterface {
                 if (followFeed != null) {
                     followFeeds.add(followFeed);
                 }
-                else {
-                    throw new RuntimeException("ERROR - 해당 글은 존재하지 않습니다.");
-                }
             }
         }
 

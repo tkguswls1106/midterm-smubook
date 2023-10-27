@@ -102,9 +102,20 @@ public class FeedController {
         return "redirect:/users/" + loginUser.getId() + "/feeds";
     }
 
-    @DeleteMapping("/feeds/{feedId}")  // feed 삭제 (삭제시 'feed,Like,댓글' 전부 일괄삭제. 로그인사용자가 feed 작성자인 경우에만 삭제 가능.)
-    public void deleteFeed(@PathVariable Long feedId, @RequestBody FeedDeleteRequestDto feedDeleteRequestDto) {
+    @DeleteMapping("/feeds/{feedId}")  // feed 삭제 (삭제시 'feed,Like,댓글' 전부 일괄삭제.)
+    public String deleteFeed(@PathVariable Long feedId, @ModelAttribute FeedDeleteRequestDto feedDeleteRequestDto, HttpSession session) {
+
+        User loginUser;
+        try {  // 로그인 체크
+            loginUser = loginCheckSession(session);
+        }
+        catch (RuntimeException e) {  // 로그인이 안되어있을시, 로그인창으로 강제 리다이렉트
+            return "redirect:/login";
+        }
+
         feedServiceInterface.deleteFeed(feedId, feedDeleteRequestDto);
+
+        return "redirect:/users/" + loginUser.getId() + "/feeds";
     }
 
 

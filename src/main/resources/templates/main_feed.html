@@ -42,6 +42,12 @@
         <button th:if="${feedResponseDto.boolLike == true}" type="submit">Like 취소하기</button>
       </form>
 
+      <form method="post" th:action="@{/feeds/{feedId}(feedId=${feedResponseDto.feed.id})}">
+        <input type="hidden" name="_method" value="delete">
+        <input type="hidden" name="username" th:value="${feedResponseDto.username}">
+        <button type="submit">delete post 삭제확인</button>
+      </form>
+
       <br>
 
       ----------------------------
